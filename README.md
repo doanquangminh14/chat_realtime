@@ -345,3 +345,5 @@ Client A          Server            Client B         Client C
 | Structured Logging   | Uber Zap JSON logs with request_id, component, duration     |
 | Service Discovery    | Env-var based address resolution (K8s-ready)                |
 | Health Checks        | gRPC HealthCheck RPC + Docker healthcheck                   |
+
+![Dashboard](images/ketqua.png)
