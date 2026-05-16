@@ -346,4 +346,7 @@ Client A          Server            Client B         Client C
 | Service Discovery    | Env-var based address resolution (K8s-ready)                |
 | Health Checks        | gRPC HealthCheck RPC + Docker healthcheck                   |
 
+
+## Result
+
 ![Dashboard](images/ketqua.png)
