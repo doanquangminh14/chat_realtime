@@ -1,0 +1,33 @@
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+*.test
+*.out
+coverage.html
+coverage.txt
+
+# Environment
+.env
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Go workspace
+go.work
+go.work.sum
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+rabbitmq_data/

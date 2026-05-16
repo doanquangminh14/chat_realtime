@@ -1,0 +1,38 @@
+app:
+  name: distributed-systems
+  version: 1.0.0
+  environment: development
+
+grpc:
+  host: "0.0.0.0"
+  port: 50051
+  max_connection_idle: 5m
+  max_connection_age: 10m
+  timeout: 30s
+  max_retries: 3
+  retry_wait_min: 1s
+  retry_wait_max: 5s
+
+rabbitmq:
+  url: "amqp://guest:guest@localhost:5672/"
+  exchange: calculator_events
+  exchange_type: topic
+  queue: calculation_results
+  dlq_queue: calculation_results_dlq
+  routing_key: calculation.result
+  consumer_tag: worker-1
+  prefetch: 10
+  reconnect_delay: 5s
+
+chat:
+  host: "0.0.0.0"
+  port: 8080
+  max_clients: 1000
+  read_timeout: 60s
+  write_timeout: 10s
+  heartbeat_interval: 30s
+  message_history: 100
+
+log:
+  level: info
+  format: json

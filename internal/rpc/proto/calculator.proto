@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package calculator;
+
+option go_package = "github.com/distributed-systems/internal/rpc/proto;calculatorpb";
+
+import "google/protobuf/timestamp.proto";
+
+// CalculatorService provides distributed arithmetic operations
+service CalculatorService {
+  rpc Add(BinaryRequest) returns (CalculationResponse);
+  rpc Subtract(BinaryRequest) returns (CalculationResponse);
+  rpc Multiply(BinaryRequest) returns (CalculationResponse);
+  rpc Divide(BinaryRequest) returns (CalculationResponse);
+  rpc Power(BinaryRequest) returns (CalculationResponse);
+  rpc Factorial(UnaryRequest) returns (CalculationResponse);
+  rpc Fibonacci(UnaryRequest) returns (CalculationResponse);
+  rpc HealthCheck(HealthRequest) returns (HealthResponse);
+}
+
+message BinaryRequest {
+  string request_id = 1;
+  double operand_a = 2;
+  double operand_b = 3;
+  map<string, string> metadata = 4;
+}
+
+message UnaryRequest {
+  string request_id = 1;
+  int64 n = 2;
+  map<string, string> metadata = 3;
+}
+
+message CalculationResponse {
+  string request_id = 1;
+  string operation = 2;
+  double result = 3;
+  repeated double operands = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  int64 computation_time_ns = 6;
+  string status = 7;
+  string error_message = 8;
+}
+
+message HealthRequest {
+  string service = 1;
+}
+
+message HealthResponse {
+  string status = 1;
+  string version = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}

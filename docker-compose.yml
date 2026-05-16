@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: ds-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rpc-server:
+    build:
+      context: .
+      dockerfile: deployments/Dockerfile.rpc-server
+    container_name: ds-rpc-server
+    ports:
+      - "50051:50051"
+    environment:
+      DS_GRPC_HOST: "0.0.0.0"
+      DS_GRPC_PORT: "50051"
+      DS_RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"
+      DS_LOG_LEVEL: "info"
+      DS_LOG_FORMAT: "json"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+
+  messaging-worker:
+    build:
+      context: .
+      dockerfile: deployments/Dockerfile.messaging-worker
+    container_name: ds-messaging-worker
+    environment:
+      DS_RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"
+      DS_LOG_LEVEL: "info"
+      DS_LOG_FORMAT: "json"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      rpc-server:
+        condition: service_started
+    restart: on-failure
+
+  chat-server:
+    build:
+      context: .
+      dockerfile: deployments/Dockerfile.chat-server
+    container_name: ds-chat-server
+    ports:
+      - "8080:8080"
+    environment:
+      DS_CHAT_HOST: "0.0.0.0"
+      DS_CHAT_PORT: "8080"
+      DS_CHAT_MAX_CLIENTS: "100"
+      DS_LOG_LEVEL: "info"
+      DS_LOG_FORMAT: "json"
+    restart: on-failure
+
+volumes:
+  rabbitmq_data:
